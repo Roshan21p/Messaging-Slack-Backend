@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-
 import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../config/serverConfig';
