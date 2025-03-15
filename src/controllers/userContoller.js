@@ -16,6 +16,7 @@ export const signUp = async (req, res) => {
       .json(successResponse(user, 'User created successfully'));
   } catch (error) {
     console.log('User controller error', error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -34,6 +35,7 @@ export const signIn = async (req, res) => {
       .json(successResponse(response, 'User signed in successfully'));
   } catch (error) {
     console.log('User controller error', error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }

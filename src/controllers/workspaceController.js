@@ -68,6 +68,7 @@ export const deleteWorkspaceController = async (req, res) => {
       .json(successResponse(response, 'Workspace deleted successfully'));
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -89,6 +90,7 @@ export const getWorkspaceController = async (req, res) => {
       .json(successResponse(response, 'Workspace fetched successfully'));
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -115,6 +117,7 @@ export const getWorkspaceByJoinCodeController = async (req, res) => {
       );
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -137,6 +140,7 @@ export const updateWorkspaceController = async (req, res) => {
       .json(successResponse(response, 'Workspace updated successfully'));
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -162,6 +166,7 @@ export const addMemberToWorkspaceController = async (req, res) => {
       );
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
@@ -186,6 +191,7 @@ export const addChannelToWorkspaceController = async (req, res) => {
       );
   } catch (error) {
     console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
