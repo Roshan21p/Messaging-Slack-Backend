@@ -9,6 +9,14 @@ import crudRepository from './crudRepository.js';
 const workspaceRepository = {
   ...crudRepository(Workspace),
 
+  getWorkspaceDetailsById: async function (workspaceId) {
+    const workspace = await Workspace.findById(workspaceId)
+      .populate('members.memberId', 'username email avatar')
+      .populate('channels');
+
+    return workspace;
+  },
+
   getWorkspaceByName: async function (workspaceName) {
     const workspace = await Workspace.findOne({
       name: workspaceName
@@ -59,7 +67,7 @@ const workspaceRepository = {
     }
 
     const isMemberAlreadyPartOfWorkspace = workspace.members.find(
-      (member) => member.memberId === memberId
+      (member) => member.memberId.toString() === memberId
     );
 
     if (isMemberAlreadyPartOfWorkspace) {
@@ -69,6 +77,7 @@ const workspaceRepository = {
         statusCode: StatusCodes.FORBIDDEN
       });
     }
+
     workspace.members.push({
       memberId,
       role
@@ -104,7 +113,8 @@ const workspaceRepository = {
     }
 
     const channel = await channelRepository.create({
-      name: channelName
+      name: channelName,
+      workspaceId: workspaceId
     });
 
     workspace.channels.push(channel);

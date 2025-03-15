@@ -21,12 +21,12 @@ export default function crudRepository(model) {
       return updatedDoc;
     },
     deleteMany: async function (modelIds) {
-    const response = await model.deleteMany({
-      _id: {
-        $in: modelIds
-      }
-    });
-    return response;
+      const response = await model.deleteMany({
+        _id: {
+          $in: modelIds
+        }
+      });
+      return response;
     }
-  }
+  };
 }
