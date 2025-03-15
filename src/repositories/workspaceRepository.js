@@ -115,9 +115,9 @@ const workspaceRepository = {
   },
 
   fetchAllWorkspaceByMemberId: async function (memberId) {
-    const workspaces = await Workspace({
+    const workspaces = await Workspace.find({
       'members.memberId': memberId
-    }).populate('member.memberId', 'username email avatar');
+    }).populate('members.memberId', 'username email avatar');
 
     return workspaces;
   }
