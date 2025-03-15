@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-import { MAIL_ID, MAIL_PASSWORD } from './serverConfig';
+import { MAIL_ID, MAIL_PASSWORD } from './serverConfig.js';
 
 export default nodemailer.createTransport({
   service: 'Gmail',

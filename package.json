@@ -15,10 +15,12 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bull": "^4.16.5",
     "dotenv": "^16.4.7",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "express": "^4.21.2",
     "http-status-codes": "^2.3.0",
+    "ioredis": "^5.6.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "nodemailer": "^6.10.0",
