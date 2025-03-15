@@ -107,7 +107,7 @@ const workspaceRepository = {
       name: channelName
     });
 
-    workspace.channel.push(channel);
+    workspace.channels.push(channel);
 
     await workspace.save();
 

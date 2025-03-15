@@ -34,6 +34,7 @@ export const signUpService = async (data) => {
         error.message
       );
     }
+    throw error;
   }
 };
 
