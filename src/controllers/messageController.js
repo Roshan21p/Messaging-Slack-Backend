@@ -7,7 +7,7 @@ import {
   successResponse
 } from '../utils/common/responseObjects.js';
 
-export const getMessagesController = async (req, res) => {    
+export const getMessagesController = async (req, res) => {
   try {
     const messages = await getMessagesService(
       { channelId: req.params.channelId },
