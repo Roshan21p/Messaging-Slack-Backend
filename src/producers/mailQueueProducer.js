@@ -1,7 +1,6 @@
-import '../processors/mailProcessor.js'
+import '../processors/mailProcessor.js';
 
 import mailQueue from '../queues/mailQueue.js';
-
 
 export const addEmailToMailQueue = async (emailData) => {
   console.log('initiating email sending process');

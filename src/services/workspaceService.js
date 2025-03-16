@@ -267,7 +267,7 @@ export const addMemberToWorkspaceService = async (
 
     addEmailToMailQueue({
       ...workspaceJoinMail(workspace),
-       to: isValidUser.email
+      to: isValidUser.email
     });
     return response;
   } catch (error) {
