@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import bullServerAdapter from './config/bullBoardConfig.js';
 import connectDB from './config/dbConfig.js';
 import { PORT } from './config/serverConfig.js';
+import messagleHandler from './controllers/messageSocketController.js';
 import apiRouter from './routes/apiRoutes.js';
 
 const app = express();
@@ -26,15 +27,16 @@ app.get('/ping', (req, res) => {
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
 
-  setTimeout(() => {
-    socket.emit("message","This is a message from the server");
-  },3000)
+  // setTimeout(() => {
+  //   socket.emit("message","This is a message from the server");
+  // },3000)
 
-  socket.on('messageFromClient', (data) => {
-    console.log('Message from client', data);
+  // socket.on('messageFromClient', (data) => {
+  //   console.log('Message from client', data);
 
-    io.emit('new message', data.toUpperCase());
-  });
+  //   io.emit('new message', data.toUpperCase());
+  // });
+  messagleHandler(io, socket);
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'
