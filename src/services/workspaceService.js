@@ -18,9 +18,9 @@ const isUserAdminOfWorkspace = (workspace, userId) => {
   );
 };
 
-export const isUserMemberOfWorkspace = (workspace, userId) => {
+export const isUserMemberOfWorkspace = (workspace, userId) => {  
   return workspace.members.find(
-    (member) => member.memberId.toString() === userId
+    (member) => member.memberId._id.toString() === userId
   );
 };
 
@@ -123,7 +123,7 @@ export const deleteWorkspaceService = async (workspaceId, userId) => {
 
 export const getWorkspaceService = async (workspaceId, userId) => {
   try {
-    const workspace = await workspaceRepository.getById(workspaceId);
+    const workspace = await workspaceRepository.getWorkspaceDetailsById(workspaceId);
 
     if (!workspace) {
       throw new ClientError({
