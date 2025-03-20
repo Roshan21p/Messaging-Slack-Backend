@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema(
       unique: true,
       minLength: [3, 'Username must be at least 3 characters'],
       match: [
-        /^[a-zA-Z0-9]+$/,
-        'Username must contain only letters and numbers'
+     /^[a-z]+$/,
+     'Username must contain only lowercase letters'
       ]
     },
     avatar: {

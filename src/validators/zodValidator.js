@@ -12,12 +12,14 @@ export const validate = (schema) => {
       let explanation = [];
       let errorMessage = '';
       error.errors.forEach((key) => {
-        explanation.push(key.path[0] + ' ' + key.message);
-        errorMessage += ' : ' + key.path[0] + ' ' + key.message;
-      });
+        explanation.push(key.message);
+        errorMessage += key.message;
+      });   
+      console.log("error message", errorMessage);
+         
       res.status(StatusCodes.BAD_REQUEST).json(
         customErrorResponse({
-          message: 'Validation error' + errorMessage,
+          message: errorMessage,
           explanation: explanation
         })
       );
