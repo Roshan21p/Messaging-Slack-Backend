@@ -14,9 +14,9 @@ export const validate = (schema) => {
       error.errors.forEach((key) => {
         explanation.push(key.message);
         errorMessage += key.message;
-      });   
-      console.log("error message", errorMessage);
-         
+      });
+      console.log('error message', errorMessage);
+
       res.status(StatusCodes.BAD_REQUEST).json(
         customErrorResponse({
           message: errorMessage,

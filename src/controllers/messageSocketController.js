@@ -14,7 +14,7 @@ export default function messagleHandlers(io, socket) {
 
     // socket.broadcast.emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse);
 
-    io.to(channelId).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse) // Implementation of rooms
+    io.to(channelId).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse); // Implementation of rooms
 
     cb({
       success: true,
