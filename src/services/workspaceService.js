@@ -371,3 +371,55 @@ export const joinWorkspaceService = async (workspaceId, joinCode, userId) => {
     throw error;
   }
 };
+
+export const updateChannelToWorkspaceService = async (
+  workspaceId,
+  channelId,
+  channelName,
+  userId
+) => {
+  const workspace =
+    await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+
+  if (!workspace) {
+    throw new ClientError({
+      explanation: 'Invalid data sent from the client',
+      message: 'Channel not found',
+      statusCode: StatusCodes.NOT_FOUND
+    });
+  }
+
+  const channel =
+    await channelRepository.getChannelWithWorkspaceDetails(channelId);
+
+  if (!channel) {
+    throw new ClientError({
+      explanation: 'Invalid data sent from the client',
+      message: 'Channel not found',
+      statusCode: StatusCodes.NOT_FOUND
+    });
+  }
+
+  const isAdmin = isUserAdminOfWorkspace(workspace, userId);
+  if (!isAdmin) {
+    throw new ClientError({
+      explanation: 'User is not an admin of the workspace',
+      message: 'User is not an admin of the workspace',
+      statusCode: StatusCodes.UNAUTHORIZED
+    });
+  }
+
+  // Check if the channel actually belongs to the given workspace
+  if (channel?.workspaceId?._id.toString() !== workspaceId) {
+    throw new ClientError({
+      explanation: 'Invalid data sent from the client',
+      message: 'This channel does not belong to the specified workspace',
+      statusCode: StatusCodes.FORBIDDEN
+    });
+  }
+
+  // Update the channel name
+  channel.name = channelName;
+  await channel.save();
+  return channel;
+};
