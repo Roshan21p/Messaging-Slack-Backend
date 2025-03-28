@@ -39,8 +39,6 @@ export const getChannelByIdService = async (channelId, userId) => {
       20
     );
 
-    console.log('Channel in service', channel);
-
     return {
       messages,
       _id: channel._id,

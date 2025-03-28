@@ -11,6 +11,7 @@ export default function messagleHandlers(io, socket) {
     const { channelId } = data;
 
     const messageResponse = await createMessageService(data);
+    console.log('Channel', channelId);
 
     // socket.broadcast.emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse);
 
