@@ -42,6 +42,8 @@ export const getMessagesService = async (
       limit
     );
 
+    console.log('messages', messages);
+
     if (!messages || messages.length === 0) {
       throw new ClientError({
         explanation: `No messages found for channel ID: ${messageParams.channelId}. The channel might be empty or not exist.`,
@@ -58,5 +60,10 @@ export const getMessagesService = async (
 
 export const createMessageService = async (message) => {
   const newMessage = await messageRepository.create(message);
-  return newMessage;
+
+  const getMessageDetails = await messageRepository.getMessageDetails(
+    newMessage._id
+  );
+
+  return getMessageDetails;
 };

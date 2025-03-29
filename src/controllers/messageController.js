@@ -16,13 +16,13 @@ export const getMessagesController = async (req, res) => {
       req.user
     );
     return res
-      .status(StatusCodes)
+      .status(StatusCodes.OK)
       .json(successResponse(messages, 'Messages fetched successfully'));
   } catch (error) {
     console.log('Messages controller error', error);
 
-    if (error.statuCode) {
-      return res.status(error.statuCode).json(customErrorResponse(error));
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
     }
 
     return res

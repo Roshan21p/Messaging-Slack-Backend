@@ -4,8 +4,8 @@ class ClientError extends Error {
   constructor(error) {
     super();
     this.name = 'ClientError';
-    this.message = error.message;
     this.explanation = error.explanation;
+    this.message = error.message;
     this.statusCode = error.statusCode
       ? error.statusCode
       : StatusCodes.BAD_REQUEST;

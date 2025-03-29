@@ -9,6 +9,7 @@ export const internalErrorResponse = (error) => {
 
 export const customErrorResponse = (error) => {
   if (!error.message && !error.explanation) {
+    console.log('new');
     return internalErrorResponse(error);
   }
   return {
