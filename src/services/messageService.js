@@ -42,8 +42,6 @@ export const getMessagesService = async (
       limit
     );
 
-    console.log('messages', messages);
-
     if (!messages || messages.length === 0) {
       throw new ClientError({
         explanation: `No messages found for channel ID: ${messageParams.channelId}. The channel might be empty or not exist.`,
