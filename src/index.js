@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import { StatusCodes } from 'http-status-codes';
+import morgan from 'morgan';
 import { Server } from 'socket.io';
 
 import bullServerAdapter from './config/bullBoardConfig.js';
@@ -13,11 +14,13 @@ import apiRouter from './routes/apiRoutes.js';
 
 const app = express();
 const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: '*'
   }
 });
+
 app.use(
   cors({
     origin: FRONTEND_URL,
@@ -27,6 +30,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(morgan('dev'));
 
 app.use('/ui', bullServerAdapter.getRouter());
 
