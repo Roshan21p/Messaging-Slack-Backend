@@ -10,6 +10,7 @@ import connectDB from './config/dbConfig.js';
 import { FRONTEND_URL, PORT } from './config/serverConfig.js';
 import ChannelSocketHandlers from './controllers/channelSocketController.js';
 import MessageSocketHandlers from './controllers/messageSocketController.js';
+import UserActivitySocketHandlers from './controllers/userActivitySocketHandlers.js';
 import apiRouter from './routes/apiRoutes.js';
 
 const app = express();
@@ -53,8 +54,12 @@ io.on('connection', (socket) => {
 
   //   io.emit('new message', data.toUpperCase());
   // });
+
+  UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
+
+  
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'
