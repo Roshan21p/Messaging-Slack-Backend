@@ -54,7 +54,6 @@ io.on('connection', (socket) => {
 
   //   io.emit('new message', data.toUpperCase());
   // });
-
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
