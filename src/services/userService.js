@@ -72,3 +72,22 @@ export const signInService = async (data) => {
     throw error;
   }
 };
+
+export const getUserByUsername = async (username) => {
+  try {
+    const user = await userRepository.getByUsername(username);
+
+    if (!user) {
+      throw new ClientError({
+        explanation: 'User not found',
+        message: `No user found with username: ${username}`,
+        statusCodes: StatusCodes.NOT_FOUND
+      });
+    }
+
+    return user;
+  } catch (error) {
+    console.log('User service error:', error);
+    throw error;
+  }
+};

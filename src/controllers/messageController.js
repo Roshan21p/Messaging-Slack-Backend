@@ -35,8 +35,6 @@ export const getMessagesController = async (req, res) => {
 
 export const generateSignedUrl = async (req, res) => {
   try {
-    console.log('hello');
-
     const timestamp = Math.round(new Date().getTime() / 1000);
 
     // Generate signature

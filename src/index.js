@@ -57,8 +57,6 @@ io.on('connection', (socket) => {
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
-
-  
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'
