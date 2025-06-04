@@ -9,6 +9,7 @@ import bullServerAdapter from './config/bullBoardConfig.js';
 import connectDB from './config/dbConfig.js';
 import { FRONTEND_URL, PORT } from './config/serverConfig.js';
 import ChannelSocketHandlers from './controllers/channelSocketController.js';
+import DmSocketHandlers from './controllers/dmSocketController.js';
 import MessageSocketHandlers from './controllers/messageSocketController.js';
 import UserActivitySocketHandlers from './controllers/userActivitySocketHandlers.js';
 import apiRouter from './routes/apiRoutes.js';
@@ -57,6 +58,7 @@ io.on('connection', (socket) => {
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
+  DmSocketHandlers(io, socket);
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'

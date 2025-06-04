@@ -35,7 +35,7 @@ export default async function messageHandlers(io, socket) {
 
     // Notify others in the room that a user has joined
     io.to(roomId).emit(ONLINE_USERS_EVENT, {
-      channelId: roomId,
+      roomId: roomId,
       count: onlineCount
     });
 
@@ -43,7 +43,7 @@ export default async function messageHandlers(io, socket) {
       success: true,
       message: `Successfully joined the channel and room ${roomId}`,
       data: {
-        channelId: roomId,
+        roomId: roomId,
         users: onlineCount
       }
     });
@@ -72,7 +72,7 @@ export default async function messageHandlers(io, socket) {
 
     // Notify others in the room that a user has left
     io.to(roomId).emit(ONLINE_USERS_EVENT, {
-      channelId: roomId,
+      roomId: roomId,
       count: onlineCount
     });
 
@@ -80,7 +80,7 @@ export default async function messageHandlers(io, socket) {
       success: true,
       message: `Successfully left the channel and room ${roomId}`,
       data: {
-        channelId: roomId,
+        roomId: roomId,
         users: onlineCount
       }
     });

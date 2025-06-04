@@ -8,14 +8,24 @@ export default function messagleHandlers(io, socket) {
   socket.on(NEW_MESSAGE_EVENT, async function createMessageHandler(data, cb) {
     console.log(data, typeof data);
 
-    const { channelId } = data;
+    const { roomId, channelId } = data;
+
+    // Determine the room to emit the message to
+    const targetRoom = channelId || roomId;
+
+    if (!targetRoom) {
+      return cb({
+        success: false,
+        message: 'No valid room ID provided'
+      });
+    }
 
     const messageResponse = await createMessageService(data);
-    console.log('Channel', channelId);
+    console.log('Channel', roomId);
 
     // socket.broadcast.emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse);
 
-    io.to(channelId).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse); // Implementation of rooms
+    io.to(targetRoom).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse); // Implementation of rooms
 
     cb({
       success: true,

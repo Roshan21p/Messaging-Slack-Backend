@@ -11,3 +11,7 @@ export const USER_TYPING_EVENT = 'UserTyping';
 export const USER_STOP_TYPING_EVENT = 'UserStopTyping';
 
 export const ONLINE_USERS_EVENT = 'OnlineUsers';
+
+export const JOIN_DM_ROOM = 'JoinDmRoom';
+
+export const LEAVE_DM_ROOM = 'LeaveDmRoom';
