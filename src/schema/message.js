@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import ClientError from '../utils/errors/clientError.js';
+import { StatusCodes } from 'http-status-codes';
 
 const messageSchema = mongoose.Schema(
   {
@@ -12,7 +14,11 @@ const messageSchema = mongoose.Schema(
     channelId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Channel',
-      required: [true, 'Channel ID is required']
+      required: false
+    },
+    roomId: {
+      type: String,
+      required: false
     },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,11 +28,34 @@ const messageSchema = mongoose.Schema(
     workspaceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Workspace',
-      required: [true, 'Workspace ID is required']
+      required: false
     }
   },
   { timestamps: true }
 );
+
+messageSchema.pre('validate', function (next) {
+  if (!this.channelId && !this.roomId) {
+    return next(
+      new ClientError({
+        explanation: 'A message must be associated with either a channel or a room.',
+        message: 'Either channelId or roomId must be provided.',
+        statusCode: StatusCodes.BAD_REQUEST,
+      })
+    );
+  }
+  if (this.channelId && this.roomId) {
+    return next(
+      new ClientError({
+        explanation: 'A message cannot be associated with both a channel and a room simultaneously.',
+        message: 'Only one of channelId or roomId should be provided.',
+        statusCode: StatusCodes.BAD_REQUEST,
+      })
+    );
+  }
+  next();
+});
+
 
 const Message = mongoose.model('Message', messageSchema);
 
