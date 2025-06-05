@@ -10,7 +10,12 @@ export default function UserActivitySocketHandlers(io, socket) {
   });
 
   socket.on(USER_STOP_TYPING_EVENT, ({ roomId, username }) => {
-    console.log('User stopped typing:', username, 'in channel or roomId:', roomId);
+    console.log(
+      'User stopped typing:',
+      username,
+      'in channel or roomId:',
+      roomId
+    );
     socket.to(roomId).emit(USER_STOP_TYPING_EVENT, { roomId, username });
   });
 }

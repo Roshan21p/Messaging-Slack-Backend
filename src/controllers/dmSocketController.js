@@ -16,7 +16,7 @@ export default async function dmSocketHandlers(io, socket) {
 
   socket.on(JOIN_DM_ROOM, async function joinDMHandler(data, cb) {
     const roomId = data?.roomId;
-    console.log('room', roomId, data);
+    console.log('Join DM room', roomId);
 
     if (!roomId) {
       cb?.({
@@ -60,7 +60,7 @@ export default async function dmSocketHandlers(io, socket) {
   socket.on(LEAVE_DM_ROOM, async function leaveDMHandler(data, cb) {
     const roomId = data?.roomId;
 
-    console.log('room', roomId);
+    console.log('leave Dm room', roomId);
 
     if (!roomId) {
       cb?.({
@@ -87,7 +87,7 @@ export default async function dmSocketHandlers(io, socket) {
     const onlineCount = onlineUsersInDM.get(roomId)?.size || 0;
 
     console.log(
-      `User ${socket.id} left the room ${roomId}. Users now: ${onlineCount}`
+      `User ${socket.id} left the room ${roomId}. Users now: ${onlineCount},`
     );
 
     // Notify others in the room that a user has left

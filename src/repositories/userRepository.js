@@ -14,7 +14,7 @@ const userRepository = {
     return user;
   },
 
-   getUserById: async function (id) {
+  getUserById: async function (id) {
     const user = await User.findById({ id }).select('-password'); // exclude password
     return user;
   }

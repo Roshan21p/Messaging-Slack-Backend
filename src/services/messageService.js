@@ -2,9 +2,9 @@ import { StatusCodes } from 'http-status-codes';
 
 import channelRepository from '../repositories/channelRepository.js';
 import messageRepository from '../repositories/messageRepository.js';
+import userRepository from '../repositories/userRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { isUserMemberOfWorkspace } from './workspaceService.js';
-import userRepository from '../repositories/userRepository.js';
 
 export const getChannelMessagesService = async (
   messageParams,
@@ -57,19 +57,11 @@ export const getChannelMessagesService = async (
   }
 };
 
-export const getDMMessagesService = async (
-  roomId,
-  receiverId,
-  page,
-  limit,
-) => {
+export const getDMMessagesService = async (roomId, receiverId, page, limit) => {
   try {
-    
-    console.log("roomId",roomId, typeof roomId);
-    
-    const user = await userRepository.getById(receiverId)
+    const user = await userRepository.getById(receiverId);
 
-    if(!user){
+    if (!user) {
       throw new ClientError({
         explanation: 'The requested user does not exist in the database.',
         message: `User is not found `,
@@ -99,7 +91,7 @@ export const getDMMessagesService = async (
 
 export const createMessageService = async (message) => {
   const newMessage = await messageRepository.create(message);
-  
+
   const getMessageDetails = await messageRepository.getMessageDetails(
     newMessage._id
   );

@@ -2,7 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 
 import cloudinary from '../config/cloudinaryConfig.js';
 import { CLOUDINARY_API_SECRET } from '../config/serverConfig.js';
-import { getChannelMessagesService, getDMMessagesService } from '../services/messageService.js';
+import {
+  getChannelMessagesService,
+  getDMMessagesService
+} from '../services/messageService.js';
 import {
   customErrorResponse,
   internalErrorResponse,
@@ -67,8 +70,7 @@ export const generateSignedUrl = async (req, res) => {
 };
 
 export const getDMMessagesController = async (req, res) => {
-   try {
-
+  try {
     const senderId = req.user; // from isAuthenticated middleware
     const receiverId = req.params.receiverId;
 
@@ -79,7 +81,7 @@ export const getDMMessagesController = async (req, res) => {
       { roomId },
       receiverId,
       req.query.page || 1,
-      req.query.limit || 20,
+      req.query.limit || 20
     );
     return res
       .status(StatusCodes.OK)
@@ -95,4 +97,4 @@ export const getDMMessagesController = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(internalErrorResponse(error));
   }
-}
+};

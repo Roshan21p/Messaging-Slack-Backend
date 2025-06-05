@@ -44,6 +44,10 @@ app.get('/ping', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  if (!socket.id) {
+    console.log('Socket Id is missing therefore conection cannot establish');
+    return;
+  }
   console.log('a user connected', socket.id);
 
   // setTimeout(() => {
@@ -55,10 +59,10 @@ io.on('connection', (socket) => {
 
   //   io.emit('new message', data.toUpperCase());
   // });
-  UserActivitySocketHandlers(io, socket);
-  MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
   DmSocketHandlers(io, socket);
+  UserActivitySocketHandlers(io, socket);
+  MessageSocketHandlers(io, socket);
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'
