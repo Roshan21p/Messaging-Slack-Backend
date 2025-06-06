@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 
 import {
+  fetchAllUserService,
   getUserByUsername,
   signInService,
   signUpService
@@ -57,6 +58,25 @@ export const getUserByUsernameController = async (req, res) => {
     return res
       .status(StatusCodes.OK)
       .json(successResponse(response, 'Successfully fetched the user'));
+  } catch (error) {
+    console.log('User controller error', error);
+
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
+  }
+};
+
+export const fetchAllUsersController = async (req, res) => {
+  try {
+    const response = await fetchAllUserService();
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, 'Successfully fetched the all users'));
   } catch (error) {
     console.log('User controller error', error);
 

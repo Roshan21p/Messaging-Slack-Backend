@@ -1,6 +1,7 @@
 import express from 'express';
 
 import {
+  fetchAllUsersController,
   getUserByUsernameController,
   signIn,
   signUp
@@ -21,5 +22,6 @@ router.get(
   isAuthenticated,
   getUserByUsernameController
 );
+router.get('/', isAuthenticated, fetchAllUsersController);
 
 export default router;
