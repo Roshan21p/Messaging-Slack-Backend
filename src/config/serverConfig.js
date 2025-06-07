@@ -20,6 +20,8 @@ export const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
 
 export const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
+export const REDIS_URL = process.env.REDIS_URL
+
 export const REDIS_PORT = process.env.REDIS_PORT || 6379;
 
 export const FRONTEND_URL = process.env.FRONTEND_URL;
