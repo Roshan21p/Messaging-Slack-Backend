@@ -3,9 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { addEmailToMailQueue } from '../producers/mailQueueProducer.js';
 import channelRepository from '../repositories/channelRepository.js';
+import messageRepository from '../repositories/messageRepository.js';
 import userRepository from '../repositories/userRepository.js';
 import workspaceRepository from '../repositories/workspaceRepository.js';
-import { workspaceJoinMail } from '../utils/common/mailObject.js';
+import {
+  workspaceDeleteMail,
+  workspaceJoinMail
+} from '../utils/common/mailObject.js';
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
 
@@ -422,4 +426,70 @@ export const updateChannelToWorkspaceService = async (
   channel.name = channelName;
   await channel.save();
   return channel;
+};
+
+export const deleteMemberToWorkspaceService = async (
+  workspaceId,
+  memberId,
+  userId
+) => {
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isAdmin = isUserAdminOfWorkspace(workspace, userId);
+    if (!isAdmin) {
+      throw new ClientError({
+        explanation: 'User is not an admin of the workspace',
+        message: 'User is not an admin of the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+
+    const isValidUser = await userRepository.getById(memberId);
+    if (!isValidUser) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'User not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isMember = isUserMemberOfWorkspace(workspace, memberId);
+    if (!isMember) {
+      throw new ClientError({
+        explanation: 'User is not a member of the workspace',
+        message: 'User is not a member of the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+
+    const roomId = [userId, memberId].sort().join('_');
+
+    const response = await workspaceRepository.update(workspaceId, {
+      $pull: { members: { memberId: memberId } }
+    });
+
+    await messageRepository.deleteMany({
+      roomId: roomId,
+      workspaceId: workspaceId
+    });
+
+    addEmailToMailQueue({
+      ...workspaceDeleteMail(workspace),
+      to: isValidUser.email
+    });
+
+    return response;
+  } catch (error) {
+    console.log('deleteMemberToWorkspaceService error', error);
+    throw error;
+  }
 };

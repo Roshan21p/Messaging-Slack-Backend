@@ -5,6 +5,7 @@ import {
   addMemberToWorkspaceController,
   createWorkspaceController,
   deleteWorkspaceController,
+  deleteWorkspaceMemberController,
   getWorkspaceByJoinCodeController,
   getWorkspaceController,
   getWorkspacesUserIsMemberOfController,
@@ -62,6 +63,12 @@ router.put(
   '/:workspaceId/channel/:channelId',
   isAuthenticated,
   updateChannelToWorkspaceController
+);
+
+router.delete(
+  '/:workspaceId/member/delete',
+  isAuthenticated,
+  deleteWorkspaceMemberController
 );
 
 export default router;

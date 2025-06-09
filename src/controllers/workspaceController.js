@@ -4,6 +4,7 @@ import {
   addChannelToWorkspaceService,
   addMemberToWorkspaceService,
   createWorkspaceService,
+  deleteMemberToWorkspaceService,
   deleteWorkspaceService,
   getWorkspaceByJoinCodeService,
   getWorkspaceService,
@@ -263,6 +264,34 @@ export const updateChannelToWorkspaceController = async (req, res) => {
       .json(successResponse(response, 'Channel updated Successfully'));
   } catch (error) {
     console.log('Update channel controller error', error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
+  }
+};
+
+export const deleteWorkspaceMemberController = async (req, res) => {
+  try {
+    const response = await deleteMemberToWorkspaceService(
+      req.params.workspaceId,
+      req.body.memberId,
+      req.user
+    );
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        successResponse(
+          response,
+          'Successfully remove the member from the workspace'
+        )
+      );
+  } catch (error) {
+    console.log(error);
+
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
