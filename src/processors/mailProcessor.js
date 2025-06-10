@@ -6,8 +6,7 @@ mailQueue.process(async (job) => {
   console.log('Processing email', emailData);
 
   try {
-    const response = await mailer.sendMail(emailData);
-    console.log('Email sent', response);
+    await mailer.sendMail(emailData);
   } catch (error) {
     console.log('Error processing email', error);
   }

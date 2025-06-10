@@ -17,7 +17,7 @@ export const getChannelMessagesController = async (req, res) => {
     const messages = await getChannelMessagesService(
       { channelId: req.params.channelId },
       req.query.page || 1,
-      req.query.limit || 20,
+      req.query.limit || 100,
       req.user
     );
     return res

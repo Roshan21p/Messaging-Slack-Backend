@@ -12,7 +12,6 @@ import ChannelSocketHandlers from './controllers/channelSocketController.js';
 import DmSocketHandlers from './controllers/dmSocketController.js';
 import MessageSocketHandlers from './controllers/messageSocketController.js';
 import UserActivitySocketHandlers from './controllers/userActivitySocketHandlers.js';
-import testQueue from './queues/testQueue.js';
 import apiRouter from './routes/apiRoutes.js';
 
 const app = express();
@@ -64,18 +63,6 @@ io.on('connection', (socket) => {
   DmSocketHandlers(io, socket);
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
-});
-
-app.post('/test-queue', async (req, res) => {
-  try {
-    await testQueue.add('test-job', {
-      name: 'Render test job',
-      createdAt: new Date().toISOString()
-    });
-    res.status(200).json({ message: 'Test job added to queue' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'

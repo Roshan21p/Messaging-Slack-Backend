@@ -7,8 +7,11 @@ import messageRepository from '../repositories/messageRepository.js';
 import userRepository from '../repositories/userRepository.js';
 import workspaceRepository from '../repositories/workspaceRepository.js';
 import {
+  sendChannelDeleteEmails,
+  sendWorkspaceDeleteEmails,
   workspaceDeleteMail,
-  workspaceJoinMail
+  workspaceJoinMail,
+  workspaceMemberDeleteMail
 } from '../utils/common/mailObject.js';
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
@@ -93,7 +96,8 @@ export const getWorkspacesUserIsMemberOfService = async (userId) => {
 
 export const deleteWorkspaceService = async (workspaceId, userId) => {
   try {
-    const workspace = await workspaceRepository.getById(workspaceId);
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
 
     if (!workspace) {
       throw new ClientError({
@@ -105,20 +109,27 @@ export const deleteWorkspaceService = async (workspaceId, userId) => {
 
     const isAllowed = isUserAdminOfWorkspace(workspace, userId);
 
-    //const channelIds = workspace.channel.map((channel) => channel._id)  // contain array of channel ids
-
-    if (isAllowed) {
-      await channelRepository.deleteMany(workspace.channels);
-
-      const response = await workspaceRepository.delete(workspaceId);
-      return response;
+    if (!isAllowed) {
+      throw new ClientError({
+        explanation:
+          'User is either not a memeber or an admin of the workspace',
+        message: 'User is not allowed to delete the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
     }
 
-    throw new ClientError({
-      explanation: 'User is either not a memeber or an admin of the workspace',
-      message: 'User is not allowed to delete the workspace',
-      statusCode: StatusCodes.UNAUTHORIZED
-    });
+    const channelIds = workspace.channels;
+    await channelRepository.deleteMany({ _id: { $in: channelIds } });
+
+    const res = await messageRepository.deleteMany({ workspaceId });
+
+    console.log(res);
+
+    const response = await workspaceRepository.delete(workspaceId);
+
+    await sendWorkspaceDeleteEmails(workspace);
+
+    return response;
   } catch (error) {
     console.log('Delete workspace service error', error);
     throw error;
@@ -483,13 +494,76 @@ export const deleteMemberToWorkspaceService = async (
     });
 
     addEmailToMailQueue({
-      ...workspaceDeleteMail(workspace),
+      ...workspaceMemberDeleteMail(workspace),
       to: isValidUser.email
     });
 
     return response;
   } catch (error) {
     console.log('deleteMemberToWorkspaceService error', error);
+    throw error;
+  }
+};
+
+export const deleteChannelWorkspaceService = async (
+  workspaceId,
+  channelId,
+  userId
+) => {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const channel =
+      await channelRepository.getChannelWithWorkspaceDetails(channelId);
+
+    if (!channel) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Channel not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isAdmin = isUserAdminOfWorkspace(workspace, userId);
+    if (!isAdmin) {
+      throw new ClientError({
+        explanation: 'User is not an admin of the workspace',
+        message: 'User is not an admin of the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+
+    // Check if the channel actually belongs to the given workspace
+    if (channel?.workspaceId?._id.toString() !== workspaceId) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'This channel does not belong to the specified workspace',
+        statusCode: StatusCodes.FORBIDDEN
+      });
+    }
+
+    const response = await channelRepository.delete(channelId);
+
+    await messageRepository.deleteMany({
+      channelId: channelId,
+      workspaceId: workspaceId
+    });
+
+    const recipients = workspace.members || [];
+    await sendChannelDeleteEmails({ recipients, channel, workspace });
+
+    return response;
+  } catch (error) {
+    console.log('deleteChannelWorkspaceService error', error);
     throw error;
   }
 };
