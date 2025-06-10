@@ -10,6 +10,7 @@ import {
   sendChannelDeleteEmails,
   sendWorkspaceDeleteEmails,
   workspaceJoinMail,
+  workspaceLeaveMail,
   workspaceMemberDeleteMail
 } from '../utils/common/mailObject.js';
 import ClientError from '../utils/errors/clientError.js';
@@ -563,6 +564,49 @@ export const deleteChannelWorkspaceService = async (
     return response;
   } catch (error) {
     console.log('deleteChannelWorkspaceService error', error);
+    throw error;
+  }
+};
+
+export const leaveWorkspaceService = async (workspaceId, userId) => {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isMember = isUserMemberOfWorkspace(workspace, userId);
+    if (!isMember) {
+      throw new ClientError({
+        explanation: 'User is not an member of the workspace',
+        message: 'User is not an member of the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+
+    const user = await userRepository.getById(userId);
+
+    // Remove user from members array
+    workspace.members = workspace.members.filter(
+      (member) => member.memberId._id.toString() !== userId
+    );
+
+    await workspace.save();
+
+    addEmailToMailQueue({
+      ...workspaceLeaveMail({ workspace, user }),
+      to: user.email
+    });
+
+    return workspace;
+  } catch (error) {
+    console.log('leaveWorkspaceService error', error);
     throw error;
   }
 };

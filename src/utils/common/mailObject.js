@@ -9,6 +9,14 @@ export const workspaceJoinMail = function (workspace) {
   };
 };
 
+export const workspaceLeaveMail = function ({ workspace, user }) {
+  return {
+    from: MAIL_ID,
+    subject: 'You have left the workspace',
+    text: `Hi ${user.username},\n\nYou have successfully left the workspace: ${workspace.name}.\n\nYou can rejoin anytime with an invite link or by contacting the workspace admin.\n\nBest regards,\nMessaging-Slack team`
+  };
+};
+
 export const workspaceDeleteMail = ({ workspace, username }) => {
   return `
     <p>Hello ${username},</p>
@@ -54,7 +62,7 @@ export const sendChannelDeleteEmails = async ({
   if (!recipients || recipients.length === 0) return;
 
   const emailJobs = recipients
-    .filter((member) => member?.memberId?.email)  // keep only valid emails
+    .filter((member) => member?.memberId?.email) // keep only valid emails
     .map((member) => {
       const email = member.memberId.email;
       const username = member.memberId.username;

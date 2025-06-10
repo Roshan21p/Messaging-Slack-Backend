@@ -11,6 +11,7 @@ import {
   getWorkspaceService,
   getWorkspacesUserIsMemberOfService,
   joinWorkspaceService,
+  leaveWorkspaceService,
   resetWorkspaceJoinCodeService,
   updateChannelToWorkspaceService,
   updateWorkspaceService
@@ -317,6 +318,30 @@ export const deleteChannelWorkspaceController = async (req, res) => {
           response,
           'Successfully delete the channel from the workspace'
         )
+      );
+  } catch (error) {
+    console.log(error);
+
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
+  }
+};
+
+export const leaveWorkspaceController = async (req, res) => {
+  try {
+    const response = await leaveWorkspaceService(
+      req.params.workspaceId,
+      req.user
+    );
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        successResponse(response, 'You have successfully left the workspace.')
       );
   } catch (error) {
     console.log(error);

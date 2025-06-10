@@ -11,6 +11,7 @@ import {
   getWorkspaceController,
   getWorkspacesUserIsMemberOfController,
   joinWorkspaceController,
+  leaveWorkspaceController,
   resetJoinCodeController,
   updateChannelToWorkspaceController,
   updateWorkspaceController
@@ -77,5 +78,7 @@ router.delete(
   isAuthenticated,
   deleteChannelWorkspaceController
 );
+
+router.post('/:workspaceId/leave', isAuthenticated, leaveWorkspaceController);
 
 export default router;
