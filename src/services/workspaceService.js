@@ -9,7 +9,6 @@ import workspaceRepository from '../repositories/workspaceRepository.js';
 import {
   sendChannelDeleteEmails,
   sendWorkspaceDeleteEmails,
-  workspaceDeleteMail,
   workspaceJoinMail,
   workspaceMemberDeleteMail
 } from '../utils/common/mailObject.js';

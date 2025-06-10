@@ -54,7 +54,7 @@ export const sendChannelDeleteEmails = async ({
   if (!recipients || recipients.length === 0) return;
 
   const emailJobs = recipients
-    .filter((member) => member?.memberId?.email) // 🔥 only keep those with emails
+    .filter((member) => member?.memberId?.email)  // keep only valid emails
     .map((member) => {
       const email = member.memberId.email;
       const username = member.memberId.username;
