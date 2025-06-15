@@ -71,7 +71,7 @@ export const generateSignedUrl = async (req, res) => {
 
 export const getDMMessagesController = async (req, res) => {
   try {
-    const senderId = req.user; // from isAuthenticated middleware
+    const senderId = req.user;
     const receiverId = req.params.receiverId;
 
     // Create consistent unique roomId (e.g., lexicographically sorted)

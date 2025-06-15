@@ -63,6 +63,20 @@ io.on('connection', (socket) => {
   DmSocketHandlers(io, socket);
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
+
+  socket.on('JoinWorkspace', ({ workspaceId }) => {
+    if (workspaceId) {
+      socket.join(workspaceId);
+      console.log(`User joined workspace_${workspaceId}_${socket.id}`);
+    }
+  });
+
+  socket.on('LeaveWorkspace', ({ workspaceId }) => {
+    if (workspaceId) {
+      socket.leave(workspaceId);
+      console.log(`User left workspace_${workspaceId}_${socket.id}`);
+    }
+  });
 });
 
 // socket.io and express server both listen on 'server' instead of 'app'

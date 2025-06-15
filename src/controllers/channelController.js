@@ -15,7 +15,7 @@ export const getChannelByIdController = async (req, res) => {
     );
     return res
       .status(StatusCodes.OK)
-      .json(successResponse(response, 'Channel fetched successfully'));
+      .json(successResponse(response, 'Channel fetched successfully by Id'));
   } catch (error) {
     console.log('get channel by id controller error', error);
 

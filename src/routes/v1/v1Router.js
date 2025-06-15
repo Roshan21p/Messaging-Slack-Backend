@@ -3,6 +3,7 @@ import express from 'express';
 import channelRouter from './channels.js';
 import memberRouter from './members.js';
 import messageRouter from './messages.js';
+import messageStatus from './messageStatus.js';
 import userRouter from './users.js';
 import workspaceRouter from './workspaces.js';
 
@@ -17,5 +18,7 @@ router.use('/channels', channelRouter);
 router.use('/members', memberRouter);
 
 router.use('/messages', messageRouter);
+
+router.use('/message-status', messageStatus);
 
 export default router;

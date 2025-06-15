@@ -17,6 +17,7 @@ export const getChannelMessagesService = async (
       await channelRepository.getChannelWithWorkspaceDetails(
         messageParams.channelId
       );
+    console.log(limit);
 
     if (!channelDetails) {
       throw new ClientError({

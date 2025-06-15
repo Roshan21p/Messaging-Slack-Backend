@@ -93,7 +93,7 @@ export const getWorkspaceController = async (req, res) => {
     );
     return res
       .status(StatusCodes.OK)
-      .json(successResponse(response, 'Workspace fetched successfully'));
+      .json(successResponse(response, 'Workspace fetched successfully by Id'));
   } catch (error) {
     console.log(error);
 

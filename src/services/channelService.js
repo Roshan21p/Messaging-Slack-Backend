@@ -36,7 +36,7 @@ export const getChannelByIdService = async (channelId, userId) => {
         channelId
       },
       1,
-      20
+      50
     );
 
     return {

@@ -551,12 +551,18 @@ export const deleteChannelWorkspaceService = async (
       });
     }
 
+    workspace.channels = workspace.channels.filter(
+      (channel) => channel._id.toString() !== channelId
+    );
+
     const response = await channelRepository.delete(channelId);
 
     await messageRepository.deleteMany({
       channelId: channelId,
       workspaceId: workspaceId
     });
+
+    await workspace.save();
 
     const recipients = workspace.members || [];
     await sendChannelDeleteEmails({ recipients, channel, workspace });
