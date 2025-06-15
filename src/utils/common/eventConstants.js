@@ -17,3 +17,5 @@ export const JOIN_DM_ROOM = 'JoinDmRoom';
 export const LEAVE_DM_ROOM = 'LeaveDmRoom';
 
 export const NEW_MESSAGE_NOTIFICATION_EVENT = 'NewMessageNotification';
+
+export const MARK_MESSAGES_AS_READ = 'MarkMessagesAsRead';

@@ -1,11 +1,13 @@
 import { createMessageService } from '../services/messageService.js';
+import { markMessagesAsRead } from '../services/messageStatusService.js';
 import {
+  MARK_MESSAGES_AS_READ,
   NEW_MESSAGE_EVENT,
   NEW_MESSAGE_NOTIFICATION_EVENT,
   NEW_MESSAGE_RECEIVED_EVENT
 } from '../utils/common/eventConstants.js';
 
-export default function messagleHandlers(io, socket) {
+export default function messageHandlers(io, socket) {
   const userId = socket.handshake?.auth?.userId;
   if (!userId) {
     console.log(`Socket ${socket.id} missing userId in handshake`);
@@ -28,8 +30,6 @@ export default function messagleHandlers(io, socket) {
 
     const messageResponse = await createMessageService(data);
 
-    console.log('messageResponse', messageResponse, 'socket', socket.handshake);
-
     // socket.broadcast.emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse);
 
     io.to(targetRoom).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse); // Implementation of rooms
@@ -46,4 +46,40 @@ export default function messagleHandlers(io, socket) {
       data: messageResponse
     });
   });
+
+  socket.on(
+    MARK_MESSAGES_AS_READ,
+    async function markMessageASReadHandler(data, cb) {
+      const userId = socket.handshake?.auth?.userId;
+
+      console.log('socket userId', socket.handshake?.auth?.userId);
+
+      const { channelId, workspaceId } = data;
+
+      if (!userId || !workspaceId || !channelId) {
+        return cb?.({
+          success: false,
+          message: 'Missing required fields',
+          data: { userId, workspaceId, channelId }
+        });
+      }
+      try {
+        await markMessagesAsRead({ userId, workspaceId, channelId });
+        console.log(
+          `Marked as read for user ${userId} in workspace ${workspaceId} for channel in ${channelId}`
+        );
+      } catch (error) {
+        console.log('Error in mark_as_read socket event:', error);
+      }
+      return cb?.({
+        success: true,
+        message: 'Successfully mark the message as read',
+        data: {
+          userId: userId,
+          workspaceId: workspaceId,
+          channelId: channelId
+        }
+      });
+    }
+  );
 }
