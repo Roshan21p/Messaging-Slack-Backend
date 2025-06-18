@@ -1,5 +1,8 @@
 import { createMessageService } from '../services/messageService.js';
-import { markMessagesAsRead } from '../services/messageStatusService.js';
+import {
+  markDmMessagesAsRead,
+  markMessagesAsRead
+} from '../services/messageStatusService.js';
 import {
   MARK_MESSAGES_AS_READ,
   NEW_MESSAGE_EVENT,
@@ -36,6 +39,7 @@ export default function messageHandlers(io, socket) {
 
     io.to(workspaceId).emit(NEW_MESSAGE_NOTIFICATION_EVENT, {
       channelId,
+      roomId,
       senderId,
       workspaceId
     });
@@ -54,32 +58,37 @@ export default function messageHandlers(io, socket) {
 
       console.log('socket userId', socket.handshake?.auth?.userId);
 
-      const { channelId, workspaceId } = data;
+      const { channelId, workspaceId, roomId } = data;
 
-      if (!userId || !workspaceId || !channelId) {
+      if (!userId || !workspaceId) {
         return cb?.({
           success: false,
           message: 'Missing required fields',
-          data: { userId, workspaceId, channelId }
+          data: { userId, workspaceId }
         });
       }
       try {
-        await markMessagesAsRead({ userId, workspaceId, channelId });
+        if (channelId) {
+          await markMessagesAsRead({ userId, workspaceId, channelId });
+        } else {
+          await markDmMessagesAsRead({ userId, workspaceId, roomId });
+        }
         console.log(
-          `Marked as read for user ${userId} in workspace ${workspaceId} for channel in ${channelId}`
+          `Marked as read for user ${userId} in workspace ${workspaceId} for channel in ${channelId} or for roomId in ${roomId}`
         );
+        return cb?.({
+          success: true,
+          message: 'Successfully mark the message as read',
+          data: {
+            userId: userId,
+            workspaceId: workspaceId,
+            channelId: channelId,
+            roomId: roomId
+          }
+        });
       } catch (error) {
         console.log('Error in mark_as_read socket event:', error);
       }
-      return cb?.({
-        success: true,
-        message: 'Successfully mark the message as read',
-        data: {
-          userId: userId,
-          workspaceId: workspaceId,
-          channelId: channelId
-        }
-      });
     }
   );
 }
