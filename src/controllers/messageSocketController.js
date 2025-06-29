@@ -35,14 +35,29 @@ export default function messageHandlers(io, socket) {
 
     // socket.broadcast.emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse);
 
+    // Step 1: Emit to channel or DM room
     io.to(targetRoom).emit(NEW_MESSAGE_RECEIVED_EVENT, messageResponse); // Implementation of rooms
 
-    io.to(workspaceId).emit(NEW_MESSAGE_NOTIFICATION_EVENT, {
-      channelId,
-      roomId,
-      senderId,
-      workspaceId
-    });
+    // Step 2: Emit notification if it's a channel message
+    if (workspaceId && channelId) {
+      io.to(workspaceId).emit(NEW_MESSAGE_NOTIFICATION_EVENT, {
+        channelId,
+        roomId,
+        senderId,
+        workspaceId
+      });
+    }
+
+    // Step 3: If it's a DM, emit directly to receiverId
+    if (roomId && !channelId) {
+      const [user1, user2] = roomId.split('_');
+      const receiverId = user1 === senderId ? user2 : user1;
+      // Emit DM message directly to receiver
+      io.to(receiverId).emit(NEW_MESSAGE_NOTIFICATION_EVENT, {
+        roomId,
+        senderId
+      });
+    }
 
     return cb?.({
       success: true,
@@ -60,18 +75,18 @@ export default function messageHandlers(io, socket) {
 
       const { channelId, workspaceId, roomId } = data;
 
-      if (!userId || !workspaceId) {
+      if (!userId) {
         return cb?.({
           success: false,
           message: 'Missing required fields',
-          data: { userId, workspaceId }
+          data: userId
         });
       }
       try {
         if (channelId) {
           await markMessagesAsRead({ userId, workspaceId, channelId });
         } else {
-          await markDmMessagesAsRead({ userId, workspaceId, roomId });
+          await markDmMessagesAsRead(userId, roomId);
         }
         console.log(
           `Marked as read for user ${userId} in workspace ${workspaceId} for channel in ${channelId} or for roomId in ${roomId}`

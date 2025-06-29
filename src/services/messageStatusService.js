@@ -1,9 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 
 import channelRepository from '../repositories/channelRepository.js';
+import userRepository from '../repositories/userRepository.js';
 import workspaceRepository from '../repositories/workspaceRepository.js';
 import Message from '../schema/message.js';
 import MessageStatus from '../schema/messageStatus.js';
+import User from '../schema/user.js';
 import ClientError from '../utils/errors/clientError.js';
 import { isUserMemberOfWorkspace } from './workspaceService.js';
 
@@ -49,8 +51,6 @@ export const getUnreadMessageCount = async (userId, workspaceId) => {
         const roomId = [userId, memberId].sort().join('_');
         return roomId;
       });
-
-    console.log(dmRoomIds);
 
     const statuses = await MessageStatus.find({ userId });
 
@@ -185,37 +185,17 @@ export const markMessagesAsRead = async ({
   }
 };
 
-export const markDmMessagesAsRead = async ({ userId, workspaceId, roomId }) => {
+export const markDmMessagesAsRead = async (userId, roomId) => {
   try {
-    if (!workspaceId || !roomId) {
+    if (!roomId) {
       throw new ClientError({
-        explanation: 'Workspace and roomId  must me provided',
-        message: 'Please provide workspaceID and roomId',
+        explanation: 'roomId  must me provided',
+        message: 'Please provide roomId',
         statusCode: StatusCodes.BAD_REQUEST
       });
     }
-    const workspace =
-      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
 
-    if (!workspace) {
-      throw new ClientError({
-        explanation: 'Invalid data sent from the client',
-        message: 'Workspace not found',
-        statusCode: StatusCodes.NOT_FOUND
-      });
-    }
-
-    const isMember = isUserMemberOfWorkspace(workspace, userId);
-
-    if (!isMember) {
-      throw new ClientError({
-        explanation: 'User is not a member of the workspace',
-        message: 'User is not a member of the workspace',
-        statusCode: StatusCodes.UNAUTHORIZED
-      });
-    }
-
-    const query = { userId, roomId, workspaceId };
+    const query = { userId, roomId };
 
     const update = {
       lastReadAt: new Date()
@@ -234,7 +214,77 @@ export const markDmMessagesAsRead = async ({ userId, workspaceId, roomId }) => {
     };
   } catch (error) {
     console.log('markDmMessagesAsRead service error', error);
+    throw error;
+  }
+};
 
+export const getDMUnreadMessageCount = async (userId) => {
+  try {
+    const user = await userRepository.getUserById(userId);
+
+    if (!user) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'User not found by given Id',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    // Fetch all users except the current user
+    const otherUsers = await User.find({ _id: { $ne: userId } });
+
+    // Prepare roomId map
+    const roomIdMap = {};
+    const roomIds = [];
+
+    for (const otherUser of otherUsers) {
+      const roomId = [userId, otherUser._id.toString()].sort().join('_');
+      roomIds.push(roomId);
+      roomIdMap[roomId] = {
+        _id: otherUser._id,
+        name: otherUser.username,
+        email: otherUser.email
+      };
+    }
+
+    // Fetch MessageStatus for all roomIds
+    const messageStatuses = await MessageStatus.find({
+      userId,
+      roomId: { $in: roomIds }
+    });
+
+    const statusMap = {};
+    for (const status of messageStatuses) {
+      statusMap[status.roomId] = status.lastReadAt;
+    }
+
+    // Fetch all unread messages across all rooms in one query
+    const allUnreadMessages = await Message.find({
+      roomId: { $in: roomIds },
+      senderId: { $ne: userId },
+      $or: roomIds.map((roomId) => ({
+        roomId,
+        createdAt: { $gt: statusMap[roomId] || new Date(0) }
+      }))
+    });
+
+    // Count unread messages per room
+    const unreadCountMap = {};
+    for (const message of allUnreadMessages) {
+      const rid = message.roomId;
+      unreadCountMap[rid] = (unreadCountMap[rid] || 0) + 1;
+    }
+
+    // Build final result
+    const result = roomIds.map((roomId) => ({
+      user: roomIdMap[roomId],
+      roomId,
+      unreadCount: unreadCountMap[roomId] || 0
+    }));
+
+    return result;
+  } catch (error) {
+    console.log('getDMUnreadMessageCount service error', error);
     throw error;
   }
 };

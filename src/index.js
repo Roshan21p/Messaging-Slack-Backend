@@ -44,11 +44,14 @@ app.get('/ping', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  if (!socket.id) {
+  const userId = socket.handshake?.auth?.userId;
+
+  if (!socket.id || !userId) {
     console.log('Socket Id is missing therefore conection cannot establish');
     return;
   }
-  console.log('a user connected', socket.id);
+  socket.join(userId);
+  console.log('a user connected', socket.id, userId);
 
   // setTimeout(() => {
   //   socket.emit("message","This is a message from the server");
@@ -64,10 +67,15 @@ io.on('connection', (socket) => {
   UserActivitySocketHandlers(io, socket);
   MessageSocketHandlers(io, socket);
 
-  socket.on('JoinWorkspace', ({ workspaceId }) => {
+  socket.on('JoinWorkspace', ({ workspaceId }, cb) => {
     if (workspaceId) {
       socket.join(workspaceId);
       console.log(`User joined workspace_${workspaceId}_${socket.id}`);
+      cb?.({
+        success: true,
+        data: workspaceId,
+        message: 'Workspace joined successfully'
+      });
     }
   });
 
@@ -76,6 +84,12 @@ io.on('connection', (socket) => {
       socket.leave(workspaceId);
       console.log(`User left workspace_${workspaceId}_${socket.id}`);
     }
+  });
+
+  socket.on('disconnect', (reason) => {
+    console.log(
+      `User disconnected: ${userId}, socketId: ${socket.id}, reason: ${reason}`
+    );
   });
 });
 
