@@ -81,7 +81,7 @@ export const getDMMessagesController = async (req, res) => {
       { roomId },
       receiverId,
       req.query.page || 1,
-      req.query.limit || 20
+      req.query.limit || 50
     );
     return res
       .status(StatusCodes.OK)

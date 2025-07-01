@@ -25,7 +25,7 @@ const router = express.Router();
  *       200:
  *         description: Channel details retrieved successfully
  *       401:
- *         description: Unauthorized 
+ *         description: Unauthorized
  *       404:
  *         description: Channel not found
  */
