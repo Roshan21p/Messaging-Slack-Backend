@@ -4,6 +4,8 @@ import { createServer } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import morgan from 'morgan';
 import { Server } from 'socket.io';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 import bullServerAdapter from './config/bullBoardConfig.js';
 import connectDB from './config/dbConfig.js';
@@ -13,6 +15,7 @@ import DmSocketHandlers from './controllers/dmSocketController.js';
 import MessageSocketHandlers from './controllers/messageSocketController.js';
 import UserActivitySocketHandlers from './controllers/userActivitySocketHandlers.js';
 import apiRouter from './routes/apiRoutes.js';
+import { options } from './utils/common/swaggerOptions.js';
 
 const app = express();
 const server = createServer(app);
@@ -34,6 +37,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan('dev'));
+
+const swaggerDocs = swaggerJSDoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use('/ui', bullServerAdapter.getRouter());
 
