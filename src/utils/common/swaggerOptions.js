@@ -2,7 +2,7 @@ import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { BACKEND_URL, NODE_ENV } from '../../config/serverConfig.js';
+import { BACKEND_URL } from '../../config/serverConfig.js';
 
 // Recreate __dirname in ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -11,10 +11,7 @@ const __dirname = dirname(__filename);
 // Join path manually — works with glob pattern (*.js)
 const pathToRoutesFile = path.join(__dirname, '../../routes/v1/*.js');
 
-const servers =
-  NODE_ENV === 'production'
-    ? [{ url: BACKEND_URL }]
-    : [{ url: 'http://localhost:3000/api/v1' }];
+const servers = [{ url: BACKEND_URL }];
 
 console.log(servers);
 

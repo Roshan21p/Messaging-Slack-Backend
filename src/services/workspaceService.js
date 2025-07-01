@@ -596,6 +596,18 @@ export const leaveWorkspaceService = async (workspaceId, userId) => {
       });
     }
 
+    const member = workspace.members.find(
+      (member) => member.memberId._id.toString() === userId
+    );
+
+    // If the user is an admin, block the leave request
+    if (member?.role === 'admin') {
+      throw new ClientError({
+        explanation: 'Admins cannot leave the workspace',
+        message: 'Admin cannot leave the workspace',
+        statusCode: StatusCodes.FORBIDDEN
+      });
+    }
     const user = await userRepository.getById(userId);
 
     // Remove user from members array
