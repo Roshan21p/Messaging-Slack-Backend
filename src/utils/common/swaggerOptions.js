@@ -24,6 +24,11 @@ export const options = {
       description: `
     Messaging-Slack is a full-featured backend API built with Node.js and Express, inspired by the core functionality of Slack.
 
+
+Before using the API endpoints, ensure the server is connected to the MongoDB database.  
+Visit: \`https://messaging-slack-backend.onrender.com/connect-db\` endpoint to initiate the database connection (only required if not connected automatically).
+
+
     ### It provides endpoints for::
     -  **User Authentication & Management**: Secure login and registration system.
     -  **Workspace & Channel Creation**: Create and manage workspaces and channels.

@@ -59,15 +59,6 @@ io.on('connection', (socket) => {
   socket.join(userId);
   console.log('a user connected', socket.id, userId);
 
-  // setTimeout(() => {
-  //   socket.emit("message","This is a message from the server");
-  // },3000)
-
-  // socket.on('messageFromClient', (data) => {
-  //   console.log('Message from client', data);
-
-  //   io.emit('new message', data.toUpperCase());
-  // });
   ChannelSocketHandlers(io, socket);
   DmSocketHandlers(io, socket);
   UserActivitySocketHandlers(io, socket);
@@ -103,8 +94,25 @@ io.on('connection', (socket) => {
 // because both need to run on the same HTTP server instance. This allows
 // socket.io to share the HTTP server with the Express app, enabling real-time
 // communication and API handling through a single server.
+app.get('/connect-db', async (req, res) => {
+  try {
+    await connectDB();
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: 'Connected to MongoDB successfully' });
+  } catch (error) {
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: 'Failed to connect to MongoDB', error: error.message });
+  }
+});
 
 server.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
-  await connectDB();
+  try {
+    await connectDB(); // 👈 if this fails, it throws, and server won't start
+    console.log(`Server is running on port ${PORT}`);
+  } catch (err) {
+    console.error('Failed to start server due to DB error:', err.message);
+    process.exit(1); // Exit process
+  }
 });

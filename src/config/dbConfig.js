@@ -2,15 +2,20 @@ import mongoose from 'mongoose';
 
 import { DEV_DB_URL, NODE_ENV, PROD_DB_URL } from './serverConfig.js';
 
+const mongooseOptions = {
+  connectTimeoutMS: 60000,
+  serverSelectionTimeoutMS: 60000,
+};
+
 export default async function connectDB() {
   try {
-    if (NODE_ENV === 'development') {
-      await mongoose.connect(DEV_DB_URL);
-    } else if (NODE_ENV === 'production') {
-      await mongoose.connect(PROD_DB_URL);
-    }
-    console.log(`Connected to mongodb database from ${NODE_ENV} environment`);
+    const DB_URL = NODE_ENV === 'development' ? DEV_DB_URL : PROD_DB_URL;
+
+    await mongoose.connect(DB_URL, mongooseOptions);
+
+    console.log('Connected to MongoDB database');
   } catch (error) {
-    console.log('Error connecting to database', error);
+    console.error('Error connecting to MongoDB:', error.message);
+    throw error; // Important: allow the caller to handle failure (e.g., exit)
   }
 }
