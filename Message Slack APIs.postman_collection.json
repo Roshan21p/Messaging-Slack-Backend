@@ -1,0 +1,776 @@
+{
+  "info": {
+    "_postman_id": "3442513f-2f36-4599-91e8-dddff9eab24a",
+    "name": "Message Slack APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29685576"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "roshanprajapati2004@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "roshanadmin",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/users/signup",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "users", "signup"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": null,
+                  "disabled": true
+                },
+                {
+                  "key": "username",
+                  "value": null,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonResponse = pm.response.json();\r",
+                  "console.log(\"Token:\", jsonResponse.data.token);\r",
+                  "\r",
+                  "if (jsonResponse.data && jsonResponse.data.token) {\r",
+                  "    pm.collectionVariables.set(\"authToken\", jsonResponse.data.token);\r",
+                  "} else {\r",
+                  "    console.error(\"Token not found in login response\");\r",
+                  "}\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "abcd@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/users/signin",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "users", "signin"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by Username",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/users/username/roshan1",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "users", "username", "roshan1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/users",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Workspace",
+      "item": [
+        {
+          "name": "create Workspace",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "Test4",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get workspaces for Member",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Workspace",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces", "67d4db435017cd23f6a77acf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete member from workspace",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "memberId",
+                  "value": "67e4c5a1f26a65ecc23362be",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67e17b0c682e0a071dc95dfb/member/delete",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "workspaces",
+                "67e17b0c682e0a071dc95dfb",
+                "member",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete channel from workspace",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf/channel/681394ba888c8770bc3fd66c",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "workspaces",
+                "67d4db435017cd23f6a77acf",
+                "channel",
+                "681394ba888c8770bc3fd66c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "leave workspace",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d5178e748f82e535f9213e/leave",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "workspaces",
+                "67d5178e748f82e535f9213e",
+                "leave"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Workspace",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces", "67d4db435017cd23f6a77acf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get workspace by join code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/join/5C8F8C",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces", "join", "5C8F8C"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update workspace",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "description",
+                  "value": "Testing the workspace",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "workspaces", "67d4db435017cd23f6a77acf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add member to workspace",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "memberId",
+                  "value": "67d4e0ef979068fae63d0a0e",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf/members",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "workspaces",
+                "67d4db435017cd23f6a77acf",
+                "members"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add channel to workspace",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "channelName",
+                  "value": "Production",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/workspaces/67d4db435017cd23f6a77acf/channels",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "workspaces",
+                "67d4db435017cd23f6a77acf",
+                "channels"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Channel",
+      "item": [
+        {
+          "name": "Get Channel By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/channels/67e17b0c682e0a071dc95e03",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "channels", "67e17b0c682e0a071dc95e03"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Member",
+      "item": [
+        {
+          "name": "is Member Part of Workspace",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/members/workspace/67d5178e748f82e535f9213e",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "members",
+                "workspace",
+                "67d5178e748f82e535f9213e"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Get DM Message",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/messages/dm/67db88931c59ba77810d6640",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "messages",
+                "dm",
+                "67db88931c59ba77810d6640"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Channels Message",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/messages/67e17b0c682e0a071dc95e03",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "messages", "67e17b0c682e0a071dc95e03"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Signed URL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{dev_server}}/api/v1/messages/67d51790748f82e535f92146",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "messages", "67d51790748f82e535f92146"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Message-Status",
+      "item": [
+        {
+          "name": "Get-unread-message-count for workspace",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/message-status/channel/unread-count/67e17b0c682e0a071dc95dfb",
+              "host": ["{{dev_server}}"],
+              "path": [
+                "api",
+                "v1",
+                "message-status",
+                "channel",
+                "unread-count",
+                "67e17b0c682e0a071dc95dfb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get-unread-message-count for DM",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/message-status/dm/unread-count",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "message-status", "dm", "unread-count"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark message as read for workspace",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "workspaceId",
+                  "value": "67e17b0c682e0a071dc95dfb",
+                  "type": "text"
+                },
+                {
+                  "key": "channelId",
+                  "value": "67e17b0c682e0a071dc95e03",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/message-status/channel/mark-read",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "message-status", "channel", "mark-read"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark message as read for DM",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-access-token",
+                "value": "{{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "roomId",
+                  "value": "67d4e0ef979068fae63d0a0e_67e4c5a1f26a65ecc23362be",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{dev_server}}/api/v1/message-status/dm/mark-read",
+              "host": ["{{dev_server}}"],
+              "path": ["api", "v1", "message-status", "dm", "mark-read"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ping check",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-access-token",
+            "value": "{{authToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{dev_server}}/api/v1/messages/generate-signed-url",
+          "host": ["{{dev_server}}"],
+          "path": ["api", "v1", "messages", "generate-signed-url"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "dev_server",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
