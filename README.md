@@ -6,7 +6,7 @@ Built using **Node.js**, **Express.js**, **MongoDB**, **Redis**, and **Socket.IO
 
 🔗 **Frontend Repository**: [https://github.com/Roshan21p/Messaging-Slack-Frontend](https://github.com/Roshan21p/Messaging-Slack-Frontend)  
 🔗 **Live Backend URL**: [https://messaging-slack-backend.onrender.com/connect-db](https://messaging-slack-backend.onrender.com/connect-db) <br/>
-🔗 **BullMQ Dashboard**: [https://messaging-slack-backend.onrender.com/ui](https://messaging-slack-backend.onrender.com/ui)
+🔗 **BullBoard Dashboard**: [https://messaging-slack-backend.onrender.com/ui](https://messaging-slack-backend.onrender.com/ui)
 
 > ⚠️ Render may take 40–50 seconds to wake up if idle.
 
@@ -20,13 +20,13 @@ Built using **Node.js**, **Express.js**, **MongoDB**, **Redis**, and **Socket.IO
 - **Direct and Channel Messaging**
 - **Typing Indicators** and **Online Presence**
 - **Event-driven communication** between users
-- **Email Notifications** via **BullMQ + Redis**
+- **Email Notifications** via **Bull + Redis**
 - **Channel creation/edit/delete** notifications via email
 - **Workspace & Channel management**
 - **Add/Remove/Invite Users**
 - **Upload media** to Cloudinary
 - **Swagger API Docs** and **Postman Collection**
-- **Queue Dashboard** via BullMQ UI
+- **Queue Dashboard** via BullBoard UI
 - **Centralized Error Handling**
 - **Modular architecture**
 ---
@@ -34,7 +34,7 @@ Built using **Node.js**, **Express.js**, **MongoDB**, **Redis**, and **Socket.IO
 ## Architecture Highlights
 
 - **Event-driven design** using **Socket.IO** for real-time chat
-- **Email Queue System**: Events like channel creation or deletion trigger jobs added to Redis using **BullMQ**
+- **Email Queue System**: Events like channel creation or deletion trigger jobs added to Redis using **Bull**
 - Email jobs are processed in the background to avoid blocking the main thread
 - **Swagger** for interactive API testing and documentation
 
@@ -44,7 +44,7 @@ Built using **Node.js**, **Express.js**, **MongoDB**, **Redis**, and **Socket.IO
 - **Express.js**
 - **MongoDB** with Mongoose
 - **Socket.IO**
-- **Redis + BullMQ** (Message Queue)
+- **Redis + Bull** (Message Queue)
 - **Cloudinary**
 - **Nodemailer**
 - **Swagger** (API Documentation)
